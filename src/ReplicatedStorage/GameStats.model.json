@@ -1,0 +1,13 @@
+{
+  "ClassName": "Configuration",
+  "Children": [
+    {
+      "Name": "ClientLoaded",
+      "ClassName": "BoolValue"
+    },
+    {
+      "Name": "ServerLoaded",
+      "ClassName": "BoolValue"
+    }
+  ]
+}

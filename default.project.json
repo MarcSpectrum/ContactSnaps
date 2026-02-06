@@ -1,0 +1,68 @@
+{
+  "name": "RBLX-DEV-CHALLENGE-2026",
+  "tree": {
+    "$className": "DataModel",
+
+    "Workspace": {
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+        "FilteringEnabled": true
+      }
+    },
+
+    "ReplicatedFirst": { 
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+      },
+      "$path": "src/ReplicatedFirst"
+    },
+
+    "ReplicatedStorage": {
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+      },
+      "$path": "src/ReplicatedStorage"
+    },
+
+    "ServerScriptService": {
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+      },
+      "$path": "src/ServerScriptService"
+    },
+
+    "ServerStorage": {
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+      },
+      "$path": "src/ServerStorage"
+    },
+
+    "StarterGui": {
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+      },
+      "$path": "src/StarterGui"
+    },
+
+    "StarterPlayer": {
+      "StarterCharacterScripts": {
+      },
+      "StarterPlayerScripts": {
+      }
+    },
+
+    "Lighting": {
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+      }
+    },
+
+    "SoundService": {
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+}

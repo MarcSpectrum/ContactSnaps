@@ -1,6 +1,8 @@
 --[[ Execution ]]--
 local module = {} ;
 
+local Classes = require('../../_Shared/Classes');
+
 function module:__Init__()
 end;
 

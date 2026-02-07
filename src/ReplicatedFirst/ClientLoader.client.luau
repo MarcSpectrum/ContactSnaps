@@ -26,10 +26,7 @@ for _,v in _Client:GetDescendants() do
     require(v);
 end ;
 
-for _,v in _Client.Handlers:GetChildren() do v = require(v); if type(v.Init) == 'function' then v:Init(); end; end ;
-for _,v in _Client.Handlers:GetChildren() do v = require(v); if type(v.Start) == 'function' then task.defer(v.Start,v); end; end ;
-
-for _,v in _Client.Systems:GetChildren() do v = require(v); if type(v.Init) == 'function' then v:Init(); end; end ;
-for _,v in _Client.Systems:GetChildren() do v = require(v); if type(v.Start) == 'function' then task.defer(v.Start,v); end; end ;
+for _,v in _Client.Handlers:GetChildren() do v = require(v); if type(v.__Init__) == 'function' then v:__Init__(); end; end ;
+for _,v in _Client.Handlers:GetChildren() do v = require(v); if type(v.__Start__) == 'function' then task.defer(v.__Start__,v); end; end ;
 
 _GameStats_ClientLoaded.Value = true ;

@@ -32,22 +32,42 @@ local Class = {}:: GridClass;
 Class.__index = Class;
 
 --->>> ConstructorMethods
+-->Link Object on Tile with Node-Unit in Grid
 function Constructor.new(size: number, originPosition: Vector3): GridClass
     -->>ParametersAuhentication
     size = type(size) == 'number' and size > 0 and size or 1;
     originPosition = typeof(originPosition) == 'Vector3' and originPosition or Vector3.zero;
     -->>Setup
     local this = setmetatable({}, Class);
+    this._Canvas = {};
     -->>CanvasDrawing
-    local drawScale = _DrawingScale;
-    local drawHalfScale = (drawScale/2);
-    local originBoostValue = _defaultRayLength;
-    local originBoostVector = (Vector3.new(0,originBoostValue,0));
-    local rayDirection = -originBoostVector;
+    local expansionScale = (_DrawingScale);
+    local expansionHalfScale = (expansionScale/2);
+    -->Tempo
+    local _baseTile = Instance.new('Part');
+    _baseTile.Size = Vector3.new(expansionScale,.5,expansionScale);
+    _baseTile.Anchored = true;
+    local _baseTileContainer = Instance.new('Model');
+    _baseTileContainer.Parent = workspace;
+    -->Tempo
     for row = -size,size,1 do
         for col = -size,size,1 do
+            local thisCoordinate = Coordinate.new(row, col);
+            local thisOriginPosition = (originPosition + Vector3.new(expansionScale*row,-3,expansionScale*col));
+            -->Tempo
+            local _Tile101 = _baseTile:Clone();
+            _Tile101.Name = tostring(thisCoordinate);
+            _Tile101.Position = thisOriginPosition;
+            _Tile101.Parent = _baseTileContainer;
+            -->Tempo
+            local thisTile = Tile.new();
+            this._Canvas[tostring(thisTile)] = thisTile;
         end;
     end;
+    -->Tempo
+    _baseTileContainer.PrimaryPart = _baseTileContainer['0:0']
+    _baseTileContainer:PivotTo(CFrame.new(originPosition));
+    -->Tempo
     return this;
 end;
 

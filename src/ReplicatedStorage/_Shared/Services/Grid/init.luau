@@ -6,6 +6,8 @@ local Coordinate = require('../Customs/Coordinate');
 
 local _IsServer = RUN:IsServer();
 
+local _Camera = workspace.CurrentCamera ;
+
 --->>> Utilities
 local _Type = require('@self/_Type');
 
@@ -46,6 +48,14 @@ Grid['Utilities'] = {
 
 --->>> SecretMethods
 function Grid:__Clear__(): boolean
+    if not _IsServer then
+        if self._eMesh then self._eMesh:Destroy(); self._eMesh = nil; end;
+        if self._Mesh then self._Mesh:Destroy(); self._Mesh = nil; end;
+        if self._Highlight_eMesh then self._Highlight_eMesh:Destroy(); self._Highlight_eMesh = nil; end;
+        if self._Highlight_Mesh then self._Highlight_Mesh:Destroy(); self._Highlight_Mesh = nil; end;
+        table.clear(self._Faces);
+    end;
+    table.clear(self._Canvas);
     self['Active'] = false;
 end;
 
@@ -53,43 +63,6 @@ function Grid:__LoadBlueprint__(): _Type.Grid_Blueprint
 end;
 
 function Grid:__ReadBlueprint__(blueprint: _Type.Grid_Blueprint)
-    -->>ParametersAuhentication
-    local gridSize = blueprint.Size;
-    local gridPosition = blueprint.Position;
-    -->>CanvasDrawing
-    local expansionScale = (_DrawingScale);
-    local expansionHalfScale = (expansionScale/2);
-    local rayBoostVector = (Vector3.new(0,_defaultRayLength-100,0)) ;
-    local rayDirection = -Vector3.new(0,_defaultRayLength,0) ;
-    --_AreaParam.FilterDescendantsInstances = blueprint.
-    -->Tempo
-    local _baseTile = Instance.new('Part');
-    _baseTile.Size = Vector3.new(expansionScale,.5,expansionScale);
-    _baseTile.Anchored = true;
-    local _baseTileContainer = Instance.new('Model');
-    _baseTileContainer.Parent = workspace;
-    -->Tempo
-    for row = -gridSize,gridSize,1 do
-        for col = -gridSize,gridSize,1 do
-            local thisCoordinate = Coordinate.new(row, col);
-            local thisOriginPosition = (gridPosition + Vector3.new(expansionScale*row,-3,expansionScale*col));
-            local rayOrigin = (thisOriginPosition + rayBoostVector);
-            local rayCasted = workspace:Raycast(rayOrigin, rayDirection, _AreaParam) ;
-            regionDetected = (rayCasted and rayCasted.Instance.Parent.Name) ;
-            -->Tempo
-            local _Tile101 = _baseTile:Clone();
-            _Tile101.Name = tostring(thisCoordinate);
-            _Tile101.Position = thisOriginPosition;
-            _Tile101.Parent = _baseTileContainer;
-            -->Tempo
-            local thisTile = _Utils_Tile.new();
-            self._Canvas[tostring(thisTile)] = thisTile;
-        end;
-    end;
-    -->Tempo
-    _baseTileContainer.PrimaryPart = _baseTileContainer['0:0']
-    _baseTileContainer:PivotTo(CFrame.new(gridPosition));
-    -->Tempo
 end;
 
 function Grid:__ReadTemplate__(template: _Type.Grid_Template)
@@ -97,43 +70,50 @@ function Grid:__ReadTemplate__(template: _Type.Grid_Template)
     local gridSize = template.Size;
     local gridPosition = template.Position;
     -->>CanvasDrawing
-    self._eMesh = ASSET:CreateEditableMesh() ;
+    self._eMesh = ASSET:CreateEditableMesh();
     local expansionScale = (_DrawingScale);
     local expansionHalfScale = (expansionScale/2);
     local rayBoostVector = (Vector3.new(0,_defaultRayLength-100,0)) ;
     local rayDirection = -Vector3.new(0,_defaultRayLength,0) ;
-    _AreaParam.FilterDescendantsInstances = {template.Areas}
+    _AreaParam.FilterDescendantsInstances = {template.Areas};
+    local regionDetected = '';
     for row = -gridSize,gridSize,1 do
         for col = -gridSize,gridSize,1 do
             local thisCoordinate = Coordinate.new(row, col);
-            local thisOriginPosition = (gridPosition + Vector3.new(expansionScale*row,-3,expansionScale*col));
+            local thisOriginPosition = (gridPosition + Vector3.new(expansionScale*row,0,expansionScale*col));
             -->>Raycast
             local rayOrigin = (thisOriginPosition + rayBoostVector);
             local rayCasted = workspace:Raycast(rayOrigin, rayDirection, _AreaParam);
             regionDetected = (rayCasted and rayCasted.Instance.Parent.Name);
             -->>Cornors
             local cfrm = CFrame.new(thisOriginPosition) ;
-            local vctrI, vctrII, vctrIII = cfrm.Position, (cfrm.LookVector*expansionHalfScale), (cfrm.RightVector*expansionHalfScale);
-            local thisCorners = {
-				vctrI + vctrII + vctrIII;
-				vctrI + vctrII - vctrIII;
-				vctrI - vctrII - vctrIII;
-				vctrI - vctrII + vctrIII;
-			};
-            local vrtxs = {};
-            for i,v in thisCorners do vrtxs[i] = self._eMesh:AddVertex(v); end;
-            local thisPolygons = table.create(2);
-            thisPolygons[1] = self._eMesh:AddTriangle(vrtxs[1], vrtxs[2], vrtxs[3]);
-            thisPolygons[2] = self._eMesh:AddTriangle(vrtxs[3], vrtxs[4], vrtxs[1]);
-            for _,v in thisPolygons do self._Faces[v] = tostring(thisCoordinate); end;
+            local thisCorners;
+            local thisPolygons;
+            if not _IsServer then
+                local vctrI, vctrII, vctrIII = cfrm.Position, (cfrm.LookVector*expansionHalfScale), (cfrm.RightVector*expansionHalfScale);
+                thisCorners = {
+                    vctrI + vctrII + vctrIII;
+                    vctrI + vctrII - vctrIII;
+                    vctrI - vctrII - vctrIII;
+                    vctrI - vctrII + vctrIII;
+                };
+                local vrtxs = {};
+                for i,v in thisCorners do vrtxs[i] = self._eMesh:AddVertex(v); end;
+                thisPolygons = table.create(2);
+                thisPolygons[1] = self._eMesh:AddTriangle(vrtxs[1], vrtxs[2], vrtxs[3]);
+                thisPolygons[2] = self._eMesh:AddTriangle(vrtxs[3], vrtxs[4], vrtxs[1]);
+                for _,v in thisPolygons do self._Faces[v] = tostring(thisCoordinate); end;
+            end;
+            -->>Configs
             local thisArea = template.Configs[regionDetected] or template.Configs.Default;
-            local thisConfigs = {
-                ['CFrame'] = cfrm;
-                ['Key'] = tostring(thisCoordinate);
-                ['Coordinate'] = thisCoordinate;
-                ['Corners'] = thisCorners;
-                ['Polygons'] = thisPolygons ;
-            };
+            local thisConfigs = {};
+            thisConfigs['CFrame'] = cfrm;
+            thisConfigs['Key'] = tostring(thisCoordinate);
+            thisConfigs['Coordinate'] = thisCoordinate;
+            if not _IsServer then
+                thisConfigs['Corners'] = thisCorners;
+                thisConfigs['Polygons'] = thisPolygons;
+            end;
             local thisTile = _Utils_Tile.new();
             for i,v in thisConfigs do thisTile[i] = v; end;
             for i,v in thisArea do thisTile[i] = v; end;
@@ -142,28 +122,63 @@ function Grid:__ReadTemplate__(template: _Type.Grid_Template)
     end;
 
     -->>eMeshVisualize
-    self._Mesh = ASSET:CreateMeshPartAsync(Content.fromObject(self._eMesh)) ;
-	for i,v in GridMeshSettings do self._Mesh[i] = v; end;
-    self._Mesh:PivotTo(CFrame.new(gridPosition));
-	self._Mesh.Name = 'GridMesh' ;
-	self._Mesh.Parent = workspace.Terrain ;
+    if not _IsServer then
+        self._Mesh = ASSET:CreateMeshPartAsync(Content.fromObject(self._eMesh));
+        for i,v in GridMeshSettings do self._Mesh[i] = v; end;
+        self._Mesh:PivotTo(CFrame.new(gridPosition));
+        self._Mesh.Name = 'GridMesh';
+        self._Mesh.Parent = workspace.Terrain;
+    end;
 end;
 
 --->>> GenerationalMethods
 function Grid:Draw(template: _Type.Grid_Template): _Type.Grid_Blueprint
+    self:__Clear__();
     self:__ReadTemplate__(template);
     self['Active'] = true;
+    return self:__LoadBlueprint__();
 end;
 
 function Grid:Load(blueprint: _Type.Grid_Blueprint): boolean
+    self:__Clear__();
     self['Active'] = true;
+    return true;
 end;
 
 --->>> ActionMethods
 function Grid:Pick(key: string): _Type.Tile
+    return self['_Canvas'][tostring(key)];
 end;
 
-function Grid:Raycast(): _Type.Tile
+function Grid:Raycast(viewport: Vector3|Vector2): _Type.Tile
+    local ray = _Camera:ViewportPointToRay(viewport.X, viewport.Y);
+    local direction = (ray.Direction * _defaultRayLength);
+    local cast = self._eMesh:RaycastLocal(ray.Origin, direction);
+    local node = self._Faces[cast];
+    node = node and self:Pick(node);
+    return node;
+end;
+
+function Grid:Highlight(key: string)
+    local node = self:Pick(key);
+    if not node then return; end;
+    if not self._Highlight_eMesh then self._Highlight_eMesh = ASSET:CreateEditableMesh(); end;
+    for _,v in self._Highlight_eMesh:GetFaces() do self._Highlight_eMesh:RemoveFace(v); end;
+    self._Highlight_eMesh:RemoveUnused();
+    local Corners = node['Corners'];
+    local vrtxs = {};
+    for i,v in Corners do vrtxs[i] = self._Highlight_eMesh:AddVertex(v); end;
+    self._Highlight_eMesh:AddTriangle(vrtxs[1], vrtxs[2], vrtxs[3]);
+    self._Highlight_eMesh:AddTriangle(vrtxs[3], vrtxs[4], vrtxs[1]);
+    if not self._Highlight_Mesh then 
+        self._Highlight_Mesh = ASSET:CreateMeshPartAsync(Content.fromObject(self._Highlight_eMesh));
+        for i,v in GridMeshSettings do self._Highlight_Mesh[i] = v; end;
+        self._Highlight_Mesh.Transparency = 0;
+        self._Highlight_Mesh.Name = 'GridMesh';
+        self._Highlight_Mesh.Parent = workspace.Terrain;
+        self._Highlight = Instance.new('Highlight');
+        self._Highlight.Parent = self._Highlight_Mesh;
+    end;
 end;
 
 --->>> Finalize

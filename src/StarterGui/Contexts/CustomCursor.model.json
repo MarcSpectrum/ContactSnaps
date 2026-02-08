@@ -1,0 +1,77 @@
+{
+  "ClassName": "InputContext",
+  "Children": [
+    {
+      "Name": "Action_Execute",
+      "ClassName": "InputAction",
+      "Properties": {
+        "Type": "Bool"
+      },
+      "Children": [
+       {
+        "Name": "Input_Controller",
+        "ClassName": "InputBinding",
+        "Properties": {
+          "KeyCode": "ButtonR2"
+        }
+       },
+       {
+        "Name": "Input_Keyboard",
+        "ClassName": "InputBinding",
+        "Properties": {
+          "KeyCode": "F"
+        }
+       },
+       {
+        "Name": "Input_Mouse",
+        "ClassName": "InputBinding",
+        "Properties": {
+          "KeyCode": "MouseLeftButton"
+        }
+       }
+      ]
+    },
+    {
+      "Name": "Action_Tap",
+      "ClassName": "InputAction",
+      "Properties": {
+        "Type": "ViewportPosition"
+      },
+      "Children": [
+       {
+        "Name": "Input_Mouse",
+        "ClassName": "InputBinding",
+        "Properties": {
+          "KeyCode": "MouseRightButton"
+        }
+       }
+      ]
+    },
+    {
+      "Name": "Action_Move",
+      "ClassName": "InputAction",
+      "Properties": {
+        "Type": "Direction2D"
+      },
+      "Children": [
+       {
+        "Name": "Input_Controller",
+        "ClassName": "InputBinding",
+        "Properties": {
+          "KeyCode": "Thumbstick2"
+        }
+       },
+       {
+        "Name": "Input_Keyboard",
+        "ClassName": "InputBinding",
+        "Properties": {
+          "Down": "Down",
+          "Left": "Left",
+          "Right": "Right",
+          "Up": "Up"
+        }
+       }
+      ]
+    }
+  ]
+}

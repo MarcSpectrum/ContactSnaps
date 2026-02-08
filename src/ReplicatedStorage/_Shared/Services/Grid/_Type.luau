@@ -10,6 +10,9 @@ export type Grid = {
     _Canvas: {[string]: Tile};
     _eMesh: EditableMesh;
     _Mesh: MeshPart;
+    _Highlight_eMesh: EditableMesh;
+    _Highlight_Mesh: MeshPart;
+    _Highlight: Highlight;
     __CreateBlueprint__: () -> Grid_Blueprint;
     __ReadBlueprint__: (blueprint: Grid_Blueprint) -> boolean;
     Draw: (template: Grid_Template) -> Grid_Blueprint;

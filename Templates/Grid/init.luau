@@ -75,5 +75,16 @@ function Constructor.Is(this: any): boolean
 end;
 
 --->>> ClassMethods
+function Class:__Clear__()
+end;
+
+function Class:Pick(key: string)
+end;
+
+function Class:Raycast()
+end;
+
+function Class:Destroy()
+end;
 
 return Constructor;

@@ -5,6 +5,7 @@ export type GridTileConstructor = {
 };
 
 export type GridTileClass = {
+    Active: boolean;
 };
 
 --->>> Presets

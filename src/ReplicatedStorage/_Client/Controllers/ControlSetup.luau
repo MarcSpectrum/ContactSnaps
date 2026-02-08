@@ -6,7 +6,7 @@ end;
 
 function module:__Start__()
     local CameraStyles = require('./CameraStyles');
-    --CameraStyles.EnableIsometricCamera()
+    CameraStyles.EnableIsometricCamera()
 end;
 
 return module ;

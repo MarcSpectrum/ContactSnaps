@@ -135,7 +135,9 @@ end;
 
 --->>> ActionMethods
 function Grid:Pick(key: string): _Type.Tile
-    return self['_Canvas'][tostring(key)];
+    local tile = self['_Canvas'][tostring(key)];
+    if tile and tile.Active ~= true then return; end;
+    return tile;
 end;
 
 function Grid:Raycast(viewport: Vector3|Vector2): _Type.Tile

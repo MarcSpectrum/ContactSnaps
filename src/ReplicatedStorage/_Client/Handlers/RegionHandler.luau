@@ -34,33 +34,33 @@ _RegionInteractions['Main'] = {
 };
 
 _RegionInteractions['I'] = {
+    BackToMain = function() module:TravelTo('Main'); end;
     Factory_Main = function()
     end;
-    BackToMain = function() module:TravelTo('Main'); end;
 };
 
 _RegionInteractions['II'] = {
+    BackToMain = function() module:TravelTo('Main'); end;
     Factory_Main = function()
     end;
-    BackToMain = function() module:TravelTo('Main'); end;
 };
 
 _RegionInteractions['III'] = {
+    BackToMain = function() module:TravelTo('Main'); end;
     Factory_Main = function()
     end;
-    BackToMain = function() module:TravelTo('Main'); end;
 };
 
 _RegionInteractions['IV'] = {
+    BackToMain = function() module:TravelTo('Main'); end;
     Factory_Main = function()
     end;
-    BackToMain = function() module:TravelTo('Main'); end;
 };
 
 _RegionInteractions['V'] = {
+    BackToMain = function() module:TravelTo('Main'); end;
     Factory_Main = function()
     end;
-    BackToMain = function() module:TravelTo('Main'); end;
 };
 
 local RegionBlueprints = {};

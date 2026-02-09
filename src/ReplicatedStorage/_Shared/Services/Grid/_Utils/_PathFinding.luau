@@ -98,7 +98,7 @@ function _PathFinding.find(alpha: _Type.Tile, omega: _Type.Tile)
         if head % 50 == 0 then task.wait() end
     end
 
-    return {} -- no path
+    return false;
 end
 
 --->>> GGG

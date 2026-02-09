@@ -2,8 +2,8 @@
 * Lock character to Tile [X]
 * Pick tile to move [X]
 * Tile PathFinding [X]
-* Cross Region move [O]
-* Map Environment Interactions [O]
+* Cross Region move [X]
+* Map Environment Interactions [X]
 ]]
 local module = {} ;
 
@@ -112,6 +112,7 @@ function module:__Init__()
         _GridDebounce = true;
         Grid:Highlight({ray['Key']}, Color3.fromRGB(201, 255, 135));
         local path = Grid_PathFinding.find(self['CurrentTile'], ray);
+        if not path or self['CurrentTile'].Key == ray.Key then _GridDebounce = false; return; end;
         self:TrackPath(path);
         self['LockedTile'] = ray['Key'];
         task.delay(.5, function() _GridDebounce = false; end);

@@ -1,6 +1,8 @@
 --[[ Execution ]]--
 local module = {} ;
 
+module['currentRegion'] = nil;
+
 local Grid = require('../../_Shared/Services/Grid')
 
 local MainRegion_workspace = workspace.Terrain:WaitForChild('MainRegion');
@@ -14,8 +16,9 @@ local MainRegion_extracted = {
 local RegionBlueprints = {};
 
 function module:__Init__()
-    local template_MainRegion = Grid.Utilities['Template'].new(unpack(MainRegion_extracted));
-    RegionBlueprints['Main'] = Grid:Draw(template_MainRegion);
+    module['currentRegion'] = 'Main'
+    RegionBlueprints['Main'] = Grid.Utilities['Template'].new(unpack(MainRegion_extracted));
+    Grid:Draw(RegionBlueprints['Main']);
 end;
 
 function module:__Start__()

@@ -33,6 +33,7 @@ function Class:__Refresh__()
     table.clear(self['Connections']);
     for _,v in raycasted do
         v = v.Instance.Name;
+        if v == 'Main' then  self['MainConnected'] = true; continue; end
         local content = self.Voltage._Container[v]
         if not content then continue; end;
         if content['UniqueID'] == self['UniqueID'] then continue; end;
@@ -48,5 +49,14 @@ end;
 function Class:__Interact__()
     self.Voltage:__Calculate__()
 end;
+
+function Class:__OnPowered__(color)
+    self['_ZipZap'].Enabled = true;
+    self['_ZipZap'].Color = ColorSequence.new(color)
+end
+
+function Class:__OffPowered__(color)
+    self['_ZipZap'].Enabled = false;
+end
 
 return Constructor ;

@@ -4,6 +4,7 @@ local module = {} ;
 local Signal = require('../../_Shared/Customs/Signal');
 
 local Voltage = require('../Controllers/Voltage')
+local ProgressHandler = require('./ProgressHandler')
 
 module.Active = false;
 
@@ -67,7 +68,7 @@ _RegionInteractions['V'] = {
 
 local RegionBlueprints = {};
 
-local function LoadBlueprint(key: string, workspaceModel: Instance, interactionsKey: string)
+local function LoadBlueprint(key: string, workspaceModel: Instance, interactionsKey: string, subRegionKey: string)
     local extracted = {
         workspaceModel._Size;
         workspaceModel._Position;
@@ -79,14 +80,15 @@ local function LoadBlueprint(key: string, workspaceModel: Instance, interactions
         ['Interactions'] = workspaceModel._InteractionEnvironments;
         ['Interactions_Func'] = _RegionInteractions[interactionsKey];
         ['_Volt'] = workspaceModel:FindFirstChild('_Volt') or Instance.new('Model');
+        ['subRegionKey'] = tostring(subRegionKey);
     };
 end;
-LoadBlueprint('Main', workspace.Terrain:WaitForChild('MainRegion'), 'Main');
-LoadBlueprint('RegionA', workspace.Terrain:WaitForChild('RegionA'), 'I');
-LoadBlueprint('RegionB', workspace.Terrain:WaitForChild('RegionB'), 'II');
-LoadBlueprint('RegionE', workspace.Terrain:WaitForChild('RegionE'), 'III');
-LoadBlueprint('RegionC', workspace.Terrain:WaitForChild('RegionC'), 'IV');
-LoadBlueprint('RegionD', workspace.Terrain:WaitForChild('RegionD'), 'V');
+LoadBlueprint('Main', workspace.Terrain:WaitForChild('MainRegion'), 'Main', 'Main');
+LoadBlueprint('RegionA', workspace.Terrain:WaitForChild('RegionA'), 'I', 'A');
+LoadBlueprint('RegionB', workspace.Terrain:WaitForChild('RegionB'), 'II', 'B');
+LoadBlueprint('RegionC', workspace.Terrain:WaitForChild('RegionC'), 'III', 'C');
+LoadBlueprint('RegionD', workspace.Terrain:WaitForChild('RegionD'), 'IV', 'D');
+LoadBlueprint('RegionE', workspace.Terrain:WaitForChild('RegionE'), 'V', 'E');
 
 function module:TravelTo(regionKey: string)
     local blueprint = RegionBlueprints[regionKey];
@@ -99,7 +101,9 @@ function module:TravelTo(regionKey: string)
                 newVolt:Insert(v2, v1.Name);
             end;
         end;
-        --->>InteractStuff
+        newVolt.__Finished:Connect(function()
+            ProgressHandler:subRegionUpdate(blueprint['subRegionKey'])
+        end)
         blueprint['Voltage'] = newVolt;
     end;
     blueprint['Voltage']:__Calculate__()
@@ -113,7 +117,7 @@ end;
 
 function module:__Start__()
     --self:TravelTo('Main');
-    self:TravelTo('RegionA');
+    self:TravelTo('RegionB');
 end;
 
 return module ;

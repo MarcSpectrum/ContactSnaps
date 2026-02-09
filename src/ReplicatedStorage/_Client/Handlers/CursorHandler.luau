@@ -35,6 +35,9 @@ module['LockedTile'] = nil;
 module['PathTracker'] = nil;
 module['PathTracker_Anim'] = plyAnimator:LoadAnimation(animMove);
 
+local _GridDebounce = false;
+local _CursorDebounce = false;
+
 --->>> SelfMethods
 function module:SnapsCharacter(tile)
     if Grid['Active'] ~= true then return; end;
@@ -81,14 +84,17 @@ local _HighlightInteraction = Instance.new('Highlight');
 function module:UnLockInteraction()
     _HighlightInteraction.Parent = nil;
     _LockedInteraction = nil;
+    _CursorDebounce = false;
 end;
 function module:LockInteraction(object: Instance, fillColor: Color3)
     if object == _LockedInteraction then return; end;
     self:UnLockInteraction();
     if not object then return; end;
+    _CursorDebounce = true
     _HighlightInteraction.FillColor = typeof(fillColor) == 'Color3' and fillColor or Color3.fromRGB(135, 203, 255)
     _HighlightInteraction.Parent = object;
     _LockedInteraction = object.Name;
+    
 end;
 
 local _LockedInteraction_Volt = nil;
@@ -96,6 +102,7 @@ local _HighlightInteraction_Volt = Instance.new('Highlight');
 function module:UnLockInteraction_Volt()
     _HighlightInteraction_Volt.Parent = nil;
     _LockedInteraction_Volt = nil;
+    _CursorDebounce= false
 end;
 function module:LockInteraction_Volt(object: Instance, fillColor: Color3)
     if object == _LockedInteraction_Volt then return; end;
@@ -104,15 +111,15 @@ function module:LockInteraction_Volt(object: Instance, fillColor: Color3)
     _HighlightInteraction_Volt.FillColor = typeof(fillColor) == 'Color3' and fillColor or Color3.fromRGB(173, 135, 255)
     _HighlightInteraction_Volt.Parent = object;
     _LockedInteraction_Volt = object.Name;
+    _CursorDebounce = true
 end;
 
 --->>> SystemMethods
 function module:__Init__()
-    local _GridDebounce = false;
     
     local vectorChangedFunc = function(viewport: UDim2)
         if RegionHandler.Active ~= true then return; end;
-        if _GridDebounce == true or _LockedInteraction or _LockedInteraction_Volt then return; end;
+        if _GridDebounce == true or _CursorDebounce == true then return; end;
         local ray = Grid:Raycast(viewport);
         if not ray then return; end;
         if self['LockedTile'] == ray['Key'] then return; end;
@@ -121,7 +128,7 @@ function module:__Init__()
 
     local executeFunc = function(viewport: UDim2)
         if RegionHandler.Active ~= true then return; end;
-        if _GridDebounce == true or _LockedInteraction or _LockedInteraction_Volt then return; end;
+        if _GridDebounce == true or _CursorDebounce == true then return; end;
         local ray = Grid:Raycast(viewport);
         if not ray then return; end;
         _GridDebounce = true;

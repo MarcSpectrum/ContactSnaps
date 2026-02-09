@@ -41,4 +41,13 @@ function Class:__Interact__()
     self.Voltage:__Calculate__()
 end;
 
+function Class:__OnPowered__(color)
+    self['_ZipZap'].Enabled = true;
+    self['_ZipZap'].Color = ColorSequence.new(color)
+end
+
+function Class:__OffPowered__(color)
+    self['_ZipZap'].Enabled = false;
+end
+
 return Constructor ;

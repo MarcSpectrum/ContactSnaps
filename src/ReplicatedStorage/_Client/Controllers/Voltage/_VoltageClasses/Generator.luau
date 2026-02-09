@@ -25,6 +25,25 @@ end;
 
 function Class:__Interact__()
     self.Voltage:__Calculate__()
+    local reset = false;
+    if self['Flooded'] == true then
+        self['Flooded'] = false;
+        reset = true;
+    end
+    local floodResult = self.Voltage:Flood(self, reset)
+    self['Flooded'] = true;
+    if floodResult == true then
+        --warn('Fuck we are so back')
+    end;
 end;
+
+function Class:__OnPowered__(color)
+    self['_ZipZap'].Enabled = true;
+    self['_ZipZap'].Color = ColorSequence.new(color)
+end
+
+function Class:__OffPowered__(color)
+    self['_ZipZap'].Enabled = false;
+end
 
 return Constructor ;

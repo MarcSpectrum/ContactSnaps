@@ -91,13 +91,28 @@ function module:LockInteraction(object: Instance, fillColor: Color3)
     _LockedInteraction = object.Name;
 end;
 
+local _LockedInteraction_Volt = nil;
+local _HighlightInteraction_Volt = Instance.new('Highlight');
+function module:UnLockInteraction_Volt()
+    _HighlightInteraction_Volt.Parent = nil;
+    _LockedInteraction_Volt = nil;
+end;
+function module:LockInteraction_Volt(object: Instance, fillColor: Color3)
+    if object == _LockedInteraction_Volt then return; end;
+    self:UnLockInteraction();
+    if not object then return; end;
+    _HighlightInteraction_Volt.FillColor = typeof(fillColor) == 'Color3' and fillColor or Color3.fromRGB(173, 135, 255)
+    _HighlightInteraction_Volt.Parent = object;
+    _LockedInteraction_Volt = object.Name;
+end;
+
 --->>> SystemMethods
 function module:__Init__()
     local _GridDebounce = false;
     
     local vectorChangedFunc = function(viewport: UDim2)
         if RegionHandler.Active ~= true then return; end;
-        if _GridDebounce == true or _LockedInteraction then return; end;
+        if _GridDebounce == true or _LockedInteraction or _LockedInteraction_Volt then return; end;
         local ray = Grid:Raycast(viewport);
         if not ray then return; end;
         if self['LockedTile'] == ray['Key'] then return; end;
@@ -106,7 +121,7 @@ function module:__Init__()
 
     local executeFunc = function(viewport: UDim2)
         if RegionHandler.Active ~= true then return; end;
-        if _GridDebounce == true or _LockedInteraction then return; end;
+        if _GridDebounce == true or _LockedInteraction or _LockedInteraction_Volt then return; end;
         local ray = Grid:Raycast(viewport);
         if not ray then return; end;
         _GridDebounce = true;
@@ -135,11 +150,30 @@ function module:__Init__()
         end;
         self:UnLockInteraction()
     end;
+
+    local vectorChangedFunc_VoltInteractions = function(viewport: UDim2)
+        if RegionHandler.Active ~= true then return; end;
+        local ray = playCamera:ViewportPointToRay(viewport.X, viewport.Y);
+        local direction = (ray.Direction * 300);
+        RegionParam.FilterDescendantsInstances = {RegionHandler['currentRegion']['_Volt']};
+        local cast = workspace:Raycast(ray.Origin, direction, RegionParam);
+        self:LockInteraction_Volt(cast and cast.Instance or nil);
+    end;
+
+    local executeFunc_VoltInteractions = function(viewport: UDim2)
+        if RegionHandler.Active ~= true then return; end;
+        if not _LockedInteraction_Volt then return; end;
+        local picking = RegionHandler.currentRegion['Voltage']:Get(_LockedInteraction_Volt);
+        if picking then picking:__Interact__(); end;
+        self:UnLockInteraction_Volt()
+    end;
     local connectionSet = {
         {['Key'] = '__ValueChanged';['Func'] = vectorChangedFunc;} ;
         {['Key'] = '__Executed';['Func'] = executeFunc;} ;
         {['Key'] = '__ValueChanged';['Func'] = vectorChangedFunc_Interactions;} ;
         {['Key'] = '__Executed';['Func'] = executeFunc_Interactions;} ;
+        {['Key'] = '__ValueChanged';['Func'] = vectorChangedFunc_VoltInteractions;} ;
+        {['Key'] = '__Executed';['Func'] = executeFunc_VoltInteractions;} ;
     };
     Actions:Bind('CustomCursor', connectionSet);
 end;

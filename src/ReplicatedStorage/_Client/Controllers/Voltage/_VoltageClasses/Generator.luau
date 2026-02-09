@@ -1,23 +1,30 @@
 --->>>OOP
 local Constructor = {} ;
 
-local Class = {} ;
+local Class = {
+    Type = 'Generator';
+} ;
 Class.__index = Class
 
---->>>ConstructorMethod
-function Constructor.new()
-    local instance = setmetatable({}, Class);
-    instance['_Charged'] = true;
-    instance['Type'] = 'Generator';
-    instance:__Refresh__();
-    return instance;
-end ;
+local _DefaultConstructor = require('./_DefaultConstructor');
 
-function Constructor.is(object: any) : boolean
-end ;
+--->>>ConstructorMethod
+function Constructor.new(...)
+    local this = setmetatable({}, Class);
+    _DefaultConstructor.Construct(this, {...});
+    this['_Charged'] = true;
+    this['_Solid'] = true;
+    this['_VoltColor'] = Color3.fromRGB(math.random(0,255),math.random(0,255),math.random(0,255));
+    this['Childrens'] = {};
+    return this;
+end;
 
 --->>>ClassMethods
 function Class:__Refresh__()
+end;
+
+function Class:__Interact__()
+    self.Voltage:__Calculate__()
 end;
 
 return Constructor ;

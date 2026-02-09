@@ -3,6 +3,8 @@ local module = {} ;
 
 local Signal = require('../../_Shared/Customs/Signal');
 
+local Voltage = require('../Controllers/Voltage')
+
 module.Active = false;
 
 module.__Activated = Signal.new();
@@ -76,6 +78,7 @@ local function LoadBlueprint(key: string, workspaceModel: Instance, interactions
         ['Grid'] = Grid.Utilities['Template'].new(unpack(extracted));
         ['Interactions'] = workspaceModel._InteractionEnvironments;
         ['Interactions_Func'] = _RegionInteractions[interactionsKey];
+        ['_Volt'] = workspaceModel:FindFirstChild('_Volt') or Instance.new('Model');
     };
 end;
 LoadBlueprint('Main', workspace.Terrain:WaitForChild('MainRegion'), 'Main');
@@ -89,6 +92,17 @@ function module:TravelTo(regionKey: string)
     local blueprint = RegionBlueprints[regionKey];
     if not blueprint then return end
     Grid:Draw(blueprint['Grid']);
+    if not blueprint['Voltage'] then
+        local newVolt = Voltage.new()
+        for _,v1 in blueprint['_Volt']:GetChildren() do
+            for _,v2 in v1:GetChildren() do
+                newVolt:Insert(v2, v1.Name);
+            end;
+        end;
+        --->>InteractStuff
+        blueprint['Voltage'] = newVolt;
+    end;
+    blueprint['Voltage']:__Calculate__()
     self['currentRegion'] = blueprint;
     self.Active = true;
     self.__Activated:Fire();
@@ -99,15 +113,7 @@ end;
 
 function module:__Start__()
     --self:TravelTo('Main');
-
-    --->>> Tempo For Voltage
-    _RegionInteractions['VoltTest'] = {
-        BackToMain = function() module:TravelTo('Main'); end;
-        Factory_Main = function()
-        end;
-    };
-    LoadBlueprint('VoltTest', workspace.Terrain:WaitForChild('VoltTest'), 'VoltTest');
-    self:TravelTo('VoltTest');
+    self:TravelTo('RegionA');
 end;
 
 return module ;

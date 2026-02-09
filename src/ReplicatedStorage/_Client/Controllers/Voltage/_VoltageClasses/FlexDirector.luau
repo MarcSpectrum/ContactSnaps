@@ -2,7 +2,7 @@
 local Constructor = {} ;
 
 local Class = {
-    Type = 'Connector';
+    Type = 'FlexDirector';
 } ;
 Class.__index = Class
 
@@ -16,19 +16,15 @@ function Constructor.new(...)
     return this;
 end ;
 
--- Can only absorb once?
-
 --->>>ClassMethods
 function Class:__Refresh__()
     local rayParam = RaycastParams.new()
     rayParam.FilterType = Enum.RaycastFilterType.Include;
     rayParam.FilterDescendantsInstances = self['basePlate'].Parent.Parent:GetChildren();
     local headOrigin = self['basePlate'].HeadDirection.WorldPosition + Vector3.new(0,20,0)
-    local tailOrigin = self['basePlate'].TailDirection.WorldPosition + Vector3.new(0,20,0)
     local rayDirection = Vector3.new(0,-100,0);
     local raycasted = {
         workspace:Raycast(headOrigin,rayDirection,rayParam);
-        workspace:Raycast(tailOrigin,rayDirection,rayParam);
     };
     table.clear(self['Connections']);
     for _,v in raycasted do
@@ -36,16 +32,13 @@ function Class:__Refresh__()
         local content = self.Voltage._Container[v]
         if not content then continue; end;
         if content['UniqueID'] == self['UniqueID'] then continue; end;
-        if content['Type'] == 'Generator' then
-            table.insert(content['Childrens'], self);
-            continue;
-        end
         if content._Solid == true then continue; end;
         table.insert(self['Connections'], content);
     end;
 end;
 
 function Class:__Interact__()
+    self['basePlate'].CFrame = self['basePlate'].CFrame * CFrame.Angles(0, math.rad(90), 0)
     self.Voltage:__Calculate__()
 end;
 

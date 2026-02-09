@@ -4,7 +4,7 @@ local module = {} ;
 local PLAYER = game:GetService('Players');
 local StarterGUI = game:GetService("StarterGui")
 
-
+game:GetService('ContentProvider'):PreloadAsync({workspace.Terrain});
 
 local ply = PLAYER.LocalPlayer;
 

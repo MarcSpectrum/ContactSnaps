@@ -15,10 +15,10 @@ export type Grid = {
     _Highlight_eMesh: EditableMesh;
     _Highlight_Mesh: MeshPart;
     _Highlight: Highlight;
-    __CreateBlueprint__: () -> Grid_Blueprint;
-    __ReadBlueprint__: (blueprint: Grid_Blueprint) -> boolean;
     Draw: (template: Grid_Template) -> Grid_Blueprint;
-    Load: (blueprint: Grid_Blueprint) -> boolean;
+    Pick: (key: string) -> Tile|nil;
+    Raycast: (viewport: Vector3|Vector2) -> Tile|nil;
+    Highlight: (list: {string}) -> boolean;
 };
 
 export type Grid_Template = {

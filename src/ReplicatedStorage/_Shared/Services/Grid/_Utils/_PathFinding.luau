@@ -1,8 +1,12 @@
-local _PathFinding = {};
+local _PathFinding: GridPathfinding = {};
 
 local Grid = require('../../Grid');
 
 local _Type = require('../../Grid/_Type');
+
+export type GridPathfinding = {
+    find: (alpha: _Type.Tile, omega: _Type.Tile) -> {_Type.Tile}
+};
 
 function _PathFinding.new(origin: _Type.Tile)
     local _fld = {[origin['Key']] = {Index = 0;Invrt = {};Outvrt = {};};};
@@ -48,12 +52,14 @@ end;
 
 local function getNeighbors(tile)
     local c = tile.Coordinate
-    return {
+    local result = {
         Grid:Pick((c.Row+1)..":"..c.Col),
         Grid:Pick((c.Row-1)..":"..c.Col),
         Grid:Pick(c.Row..":"..(c.Col+1)),
         Grid:Pick(c.Row..":"..(c.Col-1)),
-    }
+    };
+    for i,v in result do result[i] = v.Active == true and v or nil; end;
+    return result;
 end
 
 function _PathFinding.find(alpha: _Type.Tile, omega: _Type.Tile)
@@ -76,7 +82,6 @@ function _PathFinding.find(alpha: _Type.Tile, omega: _Type.Tile)
                 cameFrom[neighbor.Key] = current
 
                 if neighbor.Key == omega.Key then
-                    -- reconstruct path
                     local path = { omega }
                     local node = current
                     while node do

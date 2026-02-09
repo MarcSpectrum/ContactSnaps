@@ -59,12 +59,6 @@ function Grid:__Clear__(): boolean
     self['Active'] = false;
 end;
 
-function Grid:__LoadBlueprint__(): _Type.Grid_Blueprint
-end;
-
-function Grid:__ReadBlueprint__(blueprint: _Type.Grid_Blueprint)
-end;
-
 function Grid:__ReadTemplate__(template: _Type.Grid_Template)
     -->>ParametersAuhentication
     local gridSize = template.Size;
@@ -132,15 +126,9 @@ function Grid:__ReadTemplate__(template: _Type.Grid_Template)
 end;
 
 --->>> GenerationalMethods
-function Grid:Draw(template: _Type.Grid_Template): _Type.Grid_Blueprint
+function Grid:Draw(template: _Type.Grid_Template)
     self:__Clear__();
     self:__ReadTemplate__(template);
-    self['Active'] = true;
-    return self:__LoadBlueprint__();
-end;
-
-function Grid:Load(blueprint: _Type.Grid_Blueprint): boolean
-    self:__Clear__();
     self['Active'] = true;
     return true;
 end;
@@ -159,7 +147,7 @@ function Grid:Raycast(viewport: Vector3|Vector2): _Type.Tile
     return node;
 end;
 
-function Grid:Highlight(list: {string})
+function Grid:Highlight(list: {string}, fillColor: Color3)
     if not self._Highlight_eMesh then self._Highlight_eMesh = ASSET:CreateEditableMesh(); end;
     for _,v in self._Highlight_eMesh:GetFaces() do self._Highlight_eMesh:RemoveFace(v); end;
     self._Highlight_eMesh:RemoveUnused();
@@ -181,6 +169,8 @@ function Grid:Highlight(list: {string})
         self._Highlight = Instance.new('Highlight');
         self._Highlight.Parent = self._Highlight_Mesh;
     end;
+    self._Highlight.FillColor = typeof(fillColor) == 'Color3' and fillColor or Color3.fromRGB(255, 167, 135)
+    return true;
 end;
 
 --->>> Finalize

@@ -43,7 +43,7 @@ Grid['_Faces'] = {};
 Grid['Utilities'] = {
     Tile = _Utils_Tile;
     Blueprint = _Utils_Blueprint;
-    Template = _Utils_Template
+    Template = _Utils_Template;
 };
 
 --->>> SecretMethods
@@ -159,17 +159,19 @@ function Grid:Raycast(viewport: Vector3|Vector2): _Type.Tile
     return node;
 end;
 
-function Grid:Highlight(key: string)
-    local node = self:Pick(key);
-    if not node then return; end;
+function Grid:Highlight(list: {string})
     if not self._Highlight_eMesh then self._Highlight_eMesh = ASSET:CreateEditableMesh(); end;
     for _,v in self._Highlight_eMesh:GetFaces() do self._Highlight_eMesh:RemoveFace(v); end;
     self._Highlight_eMesh:RemoveUnused();
-    local Corners = node['Corners'];
-    local vrtxs = {};
-    for i,v in Corners do vrtxs[i] = self._Highlight_eMesh:AddVertex(v); end;
-    self._Highlight_eMesh:AddTriangle(vrtxs[1], vrtxs[2], vrtxs[3]);
-    self._Highlight_eMesh:AddTriangle(vrtxs[3], vrtxs[4], vrtxs[1]);
+    for _,key in list do
+        local node = self:Pick(key);
+        if not node then continue; end;
+        local Corners = node['Corners'];
+        local vrtxs = {};
+        for i,v in Corners do vrtxs[i] = self._Highlight_eMesh:AddVertex(v); end;
+        self._Highlight_eMesh:AddTriangle(vrtxs[1], vrtxs[2], vrtxs[3]);
+        self._Highlight_eMesh:AddTriangle(vrtxs[3], vrtxs[4], vrtxs[1]);
+    end;
     if not self._Highlight_Mesh then 
         self._Highlight_Mesh = ASSET:CreateMeshPartAsync(Content.fromObject(self._Highlight_eMesh));
         for i,v in GridMeshSettings do self._Highlight_Mesh[i] = v; end;

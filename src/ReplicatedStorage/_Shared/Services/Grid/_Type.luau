@@ -1,3 +1,5 @@
+local _TypeCoordinate = require('../../Customs/Coordinate/_Type');
+
 export type Constructor = {
     new: (...any) -> any;
     is: (...any) -> any;
@@ -33,6 +35,7 @@ export type Tile = {
     Active: boolean;
     Key: string;
     CFrame: CFrame;
+    Coordinate: _TypeCoordinate._T;
     Corners: {};
     Polygons: {};
 };

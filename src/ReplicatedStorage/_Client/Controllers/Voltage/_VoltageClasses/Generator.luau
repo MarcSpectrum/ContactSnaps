@@ -6,13 +6,18 @@ Class.__index = Class
 
 --->>>ConstructorMethod
 function Constructor.new()
-    local instance = setmetatable({}, Class) ;
-    return instance ;
+    local instance = setmetatable({}, Class);
+    instance['_Charged'] = true;
+    instance['Type'] = 'Generator';
+    instance:__Refresh__();
+    return instance;
 end ;
 
-function Constructor.Is(object: any) : boolean
+function Constructor.is(object: any) : boolean
 end ;
 
 --->>>ClassMethods
+function Class:__Refresh__()
+end;
 
 return Constructor ;

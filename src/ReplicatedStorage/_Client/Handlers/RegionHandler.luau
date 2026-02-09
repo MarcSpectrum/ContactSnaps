@@ -98,7 +98,16 @@ function module:__Init__()
 end;
 
 function module:__Start__()
-    self:TravelTo('Main');
+    --self:TravelTo('Main');
+
+    --->>> Tempo For Voltage
+    _RegionInteractions['VoltTest'] = {
+        BackToMain = function() module:TravelTo('Main'); end;
+        Factory_Main = function()
+        end;
+    };
+    LoadBlueprint('VoltTest', workspace.Terrain:WaitForChild('VoltTest'), 'VoltTest');
+    self:TravelTo('VoltTest');
 end;
 
 return module ;

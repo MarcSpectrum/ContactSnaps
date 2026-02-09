@@ -25,12 +25,6 @@ function module:__Start__()
         end);
         task.wait(1);
     until success;
-
-    local EasyBolt = require('../Controllers/EasyBolt');
-    local EasyBolt_template = EasyBolt.GetDefaultTemplate();
-    local Cable101 = workspace:WaitForChild('Cable')
-    EasyBolt_template.Start = Cable101.AlphaAttachment.CFrame.Position;
-    EasyBolt_template.End = Cable101.OmegaAttachment.CFrame.Position;
 end;
 
 return module ;

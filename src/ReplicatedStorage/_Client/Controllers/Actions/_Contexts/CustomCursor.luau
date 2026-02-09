@@ -122,6 +122,7 @@ Action_Execute.Pressed:Connect(function()
 end) ;
 
 Action_Tap.StateChanged:Connect(function()
+    self.__Executed:Fire(self._Value) ;
 end) ;
 
 Action_Move.StateChanged:Connect(function()
@@ -166,5 +167,20 @@ function self:Disable()
     --__ToggleTopdown(false) ;
     self._Active = false ;
 end ;
+
+-->>> Mobile
+if UIS.TouchEnabled and not UIS.KeyboardEnabled and not UIS.MouseEnabled then
+    local ExecuteBtn = Instance.new("TextButton")
+    ExecuteBtn.Size = UDim2.fromScale(0.18, 0.12)
+    ExecuteBtn.Position = UDim2.fromScale(0.8, 0.8)
+    ExecuteBtn.Text = 'Click'
+    ExecuteBtn.BackgroundTransparency = 0.2
+    ExecuteBtn.Parent = _Cursor_Screen
+
+    ExecuteBtn.Activated:Connect(function()
+        if not self._Active then return end
+        self.__Executed:Fire(self._Value)
+    end)
+end
 
 return self ;

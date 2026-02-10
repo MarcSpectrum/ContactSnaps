@@ -8,6 +8,10 @@
     {
       "Name": "ServerLoaded",
       "ClassName": "BoolValue"
+    },
+    {
+      "Name": "BadgeRequest",
+      "ClassName": "RemoteEvent"
     }
   ]
 }

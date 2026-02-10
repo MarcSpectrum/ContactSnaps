@@ -4,6 +4,7 @@ local REP = game:GetService('ReplicatedStorage');
 
 local StagesVisual = REP:WaitForChild('StagesVisual')
 local subRegionsProgress = REP:WaitForChild('subRegionsProgress')
+local ControllerSFX = require('../Controllers/SFX')
 
 local MainStageLevels = {
     [0] = StagesVisual:WaitForChild('Stage0');
@@ -35,6 +36,8 @@ function ProgressHandler:subRegionUpdate(key: string)
     MainStage_Loaded[key].Parent = workspace
     subRegion_LoadedLength += 1
     MainStageLevels[subRegion_LoadedLength].Parent = workspace
+    ControllerSFX:Play('Finished');
+    if subRegion_LoadedLength >= 5 then REP.GameStats.BadgeRequest.OnServerEvent:FireServer(); end;
 end;
 
 function ProgressHandler:__Init__()

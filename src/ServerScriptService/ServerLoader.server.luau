@@ -25,4 +25,9 @@ for _,v in _Server.Handlers:GetChildren() do v = require(v); if type(v.Start) ==
 for _,v in _Server.Systems:GetChildren() do v = require(v); if type(v.Init) == 'function' then v:Init(); end; end ;
 for _,v in _Server.Systems:GetChildren() do v = require(v); if type(v.Start) == 'function' then task.defer(v.Start,v); end; end ;
 
+local BadgeService = game:GetService('BadgeService')
+REP.GameStats.BadgeRequest.OnServerEvent:Connect(function(ply: Player, ...)
+    BadgeService:AwardBadgeAsync(ply.UserId, 4419041860776233)
+end)
+
 _GameStats_ServerLoaded.Value = true ;

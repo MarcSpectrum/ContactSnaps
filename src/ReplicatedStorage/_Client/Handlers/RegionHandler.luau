@@ -5,6 +5,7 @@ local Signal = require('../../_Shared/Customs/Signal');
 
 local Voltage = require('../Controllers/Voltage')
 local ProgressHandler = require('./ProgressHandler')
+local ControllerSFX = require('../Controllers/SFX')
 
 module.Active = false;
 
@@ -110,6 +111,7 @@ function module:TravelTo(regionKey: string)
     self['currentRegion'] = blueprint;
     self.Active = true;
     self.__Activated:Fire();
+    ControllerSFX:Play('Teleport1')
 end;
 
 function module:__Init__()

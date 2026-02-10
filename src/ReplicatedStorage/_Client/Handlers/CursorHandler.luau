@@ -20,6 +20,8 @@ local Actions = require('../Controllers/Actions');
 local Grid = require('../../_Shared/Services/Grid');
 local Grid_PathFinding = require('../../_Shared/Services/Grid/_Utils/_PathFinding');
 
+local ControllerSFX = require('../Controllers/SFX')
+
 local RegionHandler = require('./RegionHandler');
 local RegionParam = RaycastParams.new();
 RegionParam.FilterType = Enum.RaycastFilterType.Include;
@@ -94,7 +96,7 @@ function module:LockInteraction(object: Instance, fillColor: Color3)
     _HighlightInteraction.FillColor = typeof(fillColor) == 'Color3' and fillColor or Color3.fromRGB(135, 203, 255)
     _HighlightInteraction.Parent = object;
     _LockedInteraction = object.Name;
-    
+    ControllerSFX:Play('Trigger1')
 end;
 
 local _LockedInteraction_Volt = nil;
@@ -112,6 +114,7 @@ function module:LockInteraction_Volt(object: Instance, fillColor: Color3)
     _HighlightInteraction_Volt.Parent = object;
     _LockedInteraction_Volt = object.Name;
     _CursorDebounce = true
+    ControllerSFX:Play('Trigger2')
 end;
 
 --->>> SystemMethods
@@ -124,6 +127,7 @@ function module:__Init__()
         if not ray then return; end;
         if self['LockedTile'] == ray['Key'] then return; end;
         Grid:Highlight({ray['Key']}, Color3.fromRGB(255, 163, 135));
+        ControllerSFX:Play('Click1')
     end;
 
     local executeFunc = function(viewport: UDim2)
@@ -137,6 +141,7 @@ function module:__Init__()
         if not path or self['CurrentTile'].Key == ray.Key then _GridDebounce = false; return; end;
         self:TrackPath(path);
         self['LockedTile'] = ray['Key'];
+        ControllerSFX:Play('Click2')
         task.delay(.5, function() _GridDebounce = false; end);
     end;
 

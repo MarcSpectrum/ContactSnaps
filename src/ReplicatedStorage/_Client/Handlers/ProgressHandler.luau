@@ -30,6 +30,7 @@ function ProgressHandler:subRegionUpdate(key: string)
     key = tostring(key)
     if subRegion_Loaded[key] then return end;
     if not subRegionKeys[key] then return end;
+    subRegion_Loaded[key] = true;
     MainStage_Loaded[key] = subRegionKeys[key]:Clone()
     MainStage_Loaded[key].Parent = workspace
     subRegion_LoadedLength += 1

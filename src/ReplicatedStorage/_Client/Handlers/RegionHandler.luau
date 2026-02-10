@@ -116,8 +116,7 @@ function module:__Init__()
 end;
 
 function module:__Start__()
-    --self:TravelTo('Main');
-    self:TravelTo('RegionB');
+    self:TravelTo('Main');
 end;
 
 return module ;
